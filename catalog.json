@@ -32,66 +32,6 @@
       "stability": "stable",
       "release_date": "2026-11-08",
       "install_warnings": []
-    },
-    {
-      "id": "debugging",
-      "name": "Debugging Toolkit",
-      "display_name": "Debugging Toolkit",
-      "description": "Systematic debugging with router-based sub-skill selection.",
-      "version": "1.0.0",
-      "download_url": null,
-      "checksum_sha256": null,
-      "brand_color": "#EF4444",
-      "icon": "bug",
-      "icon_type": "name",
-      "author": "PELDRUN Team",
-      "author_url": "https://peldrun.ai",
-      "developer": {
-        "name": "PELDRUN Team",
-        "url": "https://peldrun.ai",
-        "github_username": "peldrunai",
-        "verified": true
-      },
-      "repository_url": "https://github.com/peldrunai/peldrun-skill-debugging",
-      "homepage": "https://peldrun.ai/skills/debugging",
-      "license": "MIT",
-      "tags": ["debugging", "troubleshooting", "router"],
-      "has_sub_skills": true,
-      "sub_skills_count": 4,
-      "trust": "verified",
-      "stability": "stable",
-      "release_date": "2026-11-08",
-      "install_warnings": []
-    },
-    {
-      "id": "test_planning",
-      "name": "Test Planning",
-      "display_name": "Test Planning",
-      "description": "Translate requirements into a structured, prioritized test plan.",
-      "version": "1.0.0",
-      "download_url": null,
-      "checksum_sha256": null,
-      "brand_color": "#10B981",
-      "icon": "checklist",
-      "icon_type": "name",
-      "author": "PELDRUN Team",
-      "author_url": "https://peldrun.ai",
-      "developer": {
-        "name": "PELDRUN Team",
-        "url": "https://peldrun.ai",
-        "github_username": "peldrunai",
-        "verified": true
-      },
-      "repository_url": "https://github.com/peldrunai/peldrun-skill-test-planning",
-      "homepage": "https://peldrun.ai/skills/test_planning",
-      "license": "MIT",
-      "tags": ["testing", "qa", "planning"],
-      "has_sub_skills": false,
-      "sub_skills_count": 0,
-      "trust": "verified",
-      "stability": "stable",
-      "release_date": "2026-11-08",
-      "install_warnings": []
     }
   ]
 }
