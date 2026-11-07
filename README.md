@@ -1,6 +1,6 @@
 # PELDRUN Skill Catalog
 
-> The official machine-readable catalog of installable Skills for [PELDRUN](https://github.com/peldrunai/peldrun).
+> The official machine-readable catalog of installable Skills for [PELDRUN](https://github.com/peldrun/peldrun).
 
 This repository hosts a single JSON file — `catalog.json` — that PELDRUN instances can fetch over HTTPS to discover installable Skills. It is the remote companion to the built-in catalog shipped inside every PELDRUN backend (`backend/omweb/skills/catalog/builtin_catalog.json`).
 

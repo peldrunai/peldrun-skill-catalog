@@ -1,0 +1,59 @@
+name: Validate Catalog
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate catalog.json
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # The validator is pure stdlib -- no `pip install` step needed.
+      # If a future version introduces a dependency, add a `pip install
+      # -r requirements.txt` step here and commit a requirements.txt
+      # alongside scripts/validate.py.
+      - name: Run validator
+        run: python scripts/validate.py
+
+      # Fail the workflow if any of the well-known integrity markers
+      # were manually bypassed. This is a defensive check that
+      # catches the most common hand-edit mistake: marking a skill
+      # installable without actually publishing a ZIP and its hash.
+      - name: Cross-check schema_version consistency
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+
+          catalog = json.loads(Path("catalog.json").read_text(encoding="utf-8"))
+          schema = json.loads(
+              Path("schema/catalog.schema.json").read_text(encoding="utf-8")
+          )
+
+          if catalog.get("schema_version") != schema["properties"]["schema_version"]["const"]:
+              print(
+                  f"FAIL: catalog.json schema_version="
+                  f"{catalog.get('schema_version')} does not match "
+                  f"schema's const="
+                  f"{schema['properties']['schema_version']['const']}"
+              )
+              sys.exit(1)
+
+          print(
+              f"OK: schema_version={catalog['schema_version']} matches "
+              f"the JSON Schema"
+          )
+          PY

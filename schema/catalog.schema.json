@@ -1,0 +1,212 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/peldrunai/peldrun-skill-catalog/main/schema/catalog.schema.json",
+  "title": "PELDRUN Skill Catalog",
+  "description": "JSON Schema for the remote skill catalog consumed by PELDRUN via PELDRUN_SKILL_CATALOG_URL. Mirrors omweb.skills.catalog.schema.SkillCatalogItem (Pydantic v2), excluding the computed fields installable / installability_reason which are added by the backend at load time.",
+  "type": "object",
+  "required": ["schema_version", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Catalog format version. Currently only 1 is supported."
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the catalog's purpose."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp of the last catalog update. Informational only."
+    },
+    "items": {
+      "type": "array",
+      "description": "List of installable skills.",
+      "items": { "$ref": "#/definitions/catalogItem" }
+    }
+  },
+  "definitions": {
+    "developerInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "url": { "type": ["string", "null"], "format": "uri" },
+        "email": { "type": ["string", "null"] },
+        "avatar_url": { "type": ["string", "null"], "format": "uri" },
+        "github_username": { "type": ["string", "null"] },
+        "verified": { "type": "boolean", "default": false }
+      }
+    },
+    "catalogItem": {
+      "type": "object",
+      "required": ["id", "name", "version", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_]{2,63}$",
+          "description": "Canonical skill identifier. Must match the skill package's manifest.id. Lowercase, snake_case, 3-64 chars."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Technical name of the skill."
+        },
+        "display_name": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Human-friendly name shown in the UI. Falls back to `name` when null or omitted."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "One-line summary shown on the catalog card."
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+          "description": "Semantic version. Must match the skill package's manifest.version."
+        },
+        "download_url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "pattern": "^https://",
+          "description": "HTTPS URL of the skill ZIP archive. Required for installability. When null, the item is preview-only."
+        },
+        "checksum_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hex SHA-256 of the ZIP at download_url. Required for installability. When null, the item is preview-only."
+        },
+        "brand_color": {
+          "type": ["string", "null"],
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "description": "Primary brand color as 6-digit hex (e.g. '#8B5CF6'). Rendered as the skill card's left-border accent. Propagated to manifest.json at install time so the installed card matches the catalog card."
+        },
+        "icon": {
+          "type": ["string", "null"],
+          "description": "Icon name (when icon_type='name') or full inline SVG markup (when icon_type='svg')."
+        },
+        "icon_type": {
+          "type": "string",
+          "enum": ["name", "svg"],
+          "default": "name",
+          "description": "How to interpret the `icon` field."
+        },
+        "author": {
+          "type": ["string", "null"],
+          "description": "Publisher name (flat, for backward compatibility with older catalogs). Prefer `developer` for richer metadata."
+        },
+        "author_url": {
+          "type": ["string", "null"],
+          "format": "uri"
+        },
+        "homepage": {
+          "type": ["string", "null"],
+          "format": "uri"
+        },
+        "developer": {
+          "oneOf": [
+            { "$ref": "#/definitions/developerInfo" },
+            { "type": "null" }
+          ],
+          "description": "Structured publisher metadata. Rendered as a rich block in the details modal when present."
+        },
+        "repository_url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "Source repository URL."
+        },
+        "license": {
+          "type": ["string", "null"],
+          "maxLength": 80,
+          "description": "SPDX identifier (e.g. 'MIT', 'Apache-2.0')."
+        },
+        "docs_url": {
+          "type": ["string", "null"],
+          "format": "uri"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 32 },
+          "maxItems": 20,
+          "uniqueItems": true,
+          "description": "Free-form tags used for filtering in the store UI."
+        },
+        "has_sub_skills": {
+          "type": "boolean",
+          "default": false,
+          "description": "True when the skill declares a `sub_skills` array (router pattern). Drives the ROUTER badge on the card."
+        },
+        "sub_skills_count": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of sub-skills declared. Must be > 0 when has_sub_skills is true, and 0 otherwise."
+        },
+        "trust": {
+          "type": "string",
+          "enum": ["verified", "community", "unverified"],
+          "default": "unverified",
+          "description": "Publisher trust tier. `verified` renders a shield badge."
+        },
+        "stability": {
+          "type": "string",
+          "enum": ["experimental", "beta", "stable", "deprecated"],
+          "default": "stable",
+          "description": "Lifecycle stability tier. Deprecated items still render but warn."
+        },
+        "release_date": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "ISO-8601 date of the release (YYYY-MM-DD)."
+        },
+        "deprecation_message": {
+          "type": ["string", "null"],
+          "maxLength": 500,
+          "description": "Optional message shown when stability='deprecated'."
+        },
+        "install_warnings": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 500 },
+          "maxItems": 10,
+          "description": "Advisory strings shown in the install confirmation dialog (e.g. 'This skill requires Progressive Disclosure.')."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "download_url": { "type": "string" } },
+            "required": ["download_url"]
+          },
+          "then": { "required": ["checksum_sha256"] }
+        },
+        {
+          "if": {
+            "properties": { "has_sub_skills": { "const": true } },
+            "required": ["has_sub_skills"]
+          },
+          "then": {
+            "properties": { "sub_skills_count": { "minimum": 1 } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "sub_skills_count": { "minimum": 1 } },
+            "required": ["sub_skills_count"]
+          },
+          "then": {
+            "properties": { "has_sub_skills": { "const": true } }
+          }
+        }
+      ]
+    }
+  }
+}
