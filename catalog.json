@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "description": "Official PELDRUN Skill Catalog. Fetched remotely by PELDRUN instances via the PELDRUN_SKILL_CATALOG_URL environment variable.",
-  "updated_at": "2026-11-08T10:00:00Z",
+  "updated_at": "2026-11-27T21:37:53Z",
   "items": [
     {
       "id": "pdf_document",
@@ -250,6 +250,43 @@
       "stability": "stable",
       "release_date": "2026-11-08",
       "install_warnings": []
+    },
+    {
+      "id": "code_review",
+      "name": "Code Review",
+      "version": "2.0.3",
+      "description": "Systematic code review with router-based sub-skill selection.",
+      "download_url": "https://github.com/peldrun-skills/code_review/releases/download/code_review-v2.0.3/code_review-2.0.3.zip",
+      "checksum_sha256": "0a707fcfcc498194e395642c26a80ddaa528be6c8599e5f19293d354e8fff157",
+      "has_sub_skills": true,
+      "sub_skills_count": 4,
+      "trust": "verified",
+      "stability": "stable",
+      "release_date": "2026-11-27",
+      "display_name": "Code Review",
+      "icon": "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor'><path d='M9 12l2 2 4-4'/></svg>",
+      "icon_type": "svg",
+      "tags": [
+        "review",
+        "audit",
+        "security",
+        "quality",
+        "code",
+        "router"
+      ],
+      "license": "MIT",
+      "author": "PELDRUN Team",
+      "author_url": "https://peldrun.ai",
+      "developer": {
+        "name": "PELDRUN Team",
+        "url": "https://peldrun.ai"
+      },
+      "repository_url": "https://github.com/peldrun-skills/code_review",
+      "homepage": "https://peldrun.ai/skills/code_review",
+      "brand_color": "#8B5CF6",
+      "install_warnings": [
+        "This skill uses Progressive Disclosure with sub-skills."
+      ]
     }
   ]
 }
